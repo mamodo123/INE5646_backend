@@ -68,6 +68,13 @@ app.post('/api/register', async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+    // Se um usuário com este email já foi encontrado, retorne erro 400
+    return res.status(400).json({ message: 'Este email já está em uso. Por favor, use outro.' });
+    }
+
     const newUser = new User({ name, email, password });
     await newUser.save(); // A senha será hasheada pelo pre('save') middleware
 
